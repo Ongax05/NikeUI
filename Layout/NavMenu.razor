@@ -1,0 +1,50 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid justify-content-center">
+        <a class="navbar-brand" href="">NikeUI</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link mb-3" href="All_Products">
+                <span class="bi bi-border-all" aria-hidden="true"></span> Todos los productos
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="Coats">
+                <span class="bi bi-1-square" aria-hidden="true"></span> Abrigos
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="Shirts">
+                <span class="bi bi-2-square" aria-hidden="true"></span> Camisetas
+            </NavLink>
+        </div>
+        <div class="nav-item mb-5 px-3">
+            <NavLink class="nav-link" href="Pants">
+                <span class="bi bi-3-square" aria-hidden="true"></span> Pantalones
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="Cart">
+                <span class="bi bi-cart3" aria-hidden="true"></span> Carrito de compras
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+#nullable enable
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

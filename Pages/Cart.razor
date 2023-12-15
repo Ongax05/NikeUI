@@ -1,0 +1,82 @@
+@page "/Cart"
+
+@using ApiServices.Dtos
+@using ApiServices.Interfaces
+@using ApiServices.Services
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using System.ComponentModel.DataAnnotations
+@using Events
+
+@inject CartEvent CartEvent
+@inject AuthenticationStateProvider authenticationProvider
+@inject IUnitOfWork UnitOfWork
+
+
+<head>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    @if (Products == null)
+    {
+        <h1>Hubo un problema cargando los productos</h1>
+    }
+    else if (Products.Count == 0)
+    {
+        <h1>No hay productos para mostrar</h1>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-grid gap-2">
+                        <button @onclick="()=> DisposeCart()" type="button" name="DisposeCartList" id="DisposeCartList"
+                            class="btn h-100 btn-primary">
+                            Eliminar productos en el carrito
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                @foreach (var product in Products)
+                {
+                    var base64String = Convert.ToBase64String(product.Imagen);
+                    var imageSrc = $"data:image/png;base64,{base64String}";
+                    <div class="card" style="width: 18rem;">
+                        <img src="@imageSrc" class="card-img-top" alt="ProductImage">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">@product.NombreProducto</h5>
+                            <p class="card-text text-center">Precio: @product.Precio</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</body>
+
+
+
+@code {
+    private readonly List<ProductoDto> Products = new();
+
+    private void DisposeCart()
+    {
+        CartEvent.DisposeToCartEvent();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        var AuthService = (AuthenticationService)authenticationProvider;
+        var userInformation = await AuthService.GetAuthenticationStateAsync();
+        var UserId = int.Parse(userInformation.User.FindFirst("UserId").Value);
+
+        var ProductList = CartEvent.ProductsInCart;
+        Products.AddRange(ProductList);
+    }
+}
